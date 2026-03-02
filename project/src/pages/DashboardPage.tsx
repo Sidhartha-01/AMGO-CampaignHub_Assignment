@@ -22,8 +22,13 @@ import RecentCampaigns from "../components/RecentCampaigns";
 import { useCampaignStore } from "../store/campaignStore";
 import StatCard from "../components/StatCard";
 import { useCampaignPolling } from "../hooks/useCampaignPolling";
+import { mockAreaChartData } from "../sdk-client/services/campaignService";
 
-const COLORS = ["#52c41a", "#faad14", "#ff4d4f"];
+const STATUS_COLORS: Record<string, string> = {
+  Active: "#22c55e",     // green
+  Paused: "#f59e0b",    // orange
+  Completed: "#ef4444",  // red
+};;
 
 export default function DashboardPage() {
   const { campaigns } = useCampaignStore();
@@ -31,31 +36,9 @@ export default function DashboardPage() {
   useCampaignPolling();
 
   const activeCampaigns = campaigns.filter(c => c.status === "Active").length;
-  const totalReach = campaigns.reduce((acc, c) => acc + c.impressions,0);
-  const totalClicks = campaigns.reduce((acc, c) => acc + c.clicks,0 );
-  const avgConversion =totalReach > 0 ? ((totalClicks / totalReach) * 100).toFixed(2) : "0";
-  const totalBudget = campaigns.reduce((acc, c) => acc + c.budget,0);
-  const totalSpend = campaigns.reduce((acc, c) => acc + c.spend,0);
-  const budgetUtilization = totalBudget > 0? ((totalSpend / totalBudget) * 100).toFixed(0): 0;
-
-  const areaChartData = useMemo(() => {
-    if (campaigns.length === 0) {
-      return [{ name: "No Data", revenue: 0 }];
-    }
-
-    const grouped: Record<string, number> = {};
-
-    campaigns.forEach((c) => {
-      if (!c.createdAt) return;
-
-      const month = new Date(c.createdAt).toLocaleString("default", {
-        month: "short",
-      });
-
-      grouped[month] = (grouped[month] || 0) + c.spend;
-    });
-  }, [campaigns]);
-
+  const totalReach = campaigns.reduce((acc, c) => acc + (c.impressions || 0), 0);
+  const totalClicks = campaigns.reduce((acc, c) => acc + (c.clicks || 0), 0);
+  const totalSpend = campaigns.reduce((acc, c) => acc + (c.spend || 0), 0);
 
   const pieData = useMemo(() => {
     const statusCount: Record<string, number> = {};
@@ -84,8 +67,8 @@ export default function DashboardPage() {
 
         <Col xs={24} sm={12} md={6}>
           <StatCard
-            title="Total Reach"
-            value={totalReach.toLocaleString()}
+            title="Total Clicks"
+            value={totalClicks.toLocaleString()}
             icon={Users}
             color="text-blue-600"
             bg="bg-blue-50" change={""} trend={"up"}/>
@@ -93,8 +76,8 @@ export default function DashboardPage() {
 
         <Col xs={24} sm={12} md={6}>
           <StatCard
-            title="Avg. Conversion"
-            value={`${avgConversion}%`}
+            title="Total Reach"
+            value={totalReach.toLocaleString()}
             icon={Target}
             color="text-purple-600"
             bg="bg-purple-50" change={""} trend={"up"}/>
@@ -103,7 +86,7 @@ export default function DashboardPage() {
         <Col xs={24} sm={12} md={6}>
           <StatCard
             title="Budget Utilization"
-            value={`${budgetUtilization}%`}
+            value={`${totalSpend.toLocaleString()}%`}
             icon={TrendingUp}
             color="text-emerald-600"
             bg="bg-emerald-50" change={""} trend={"up"}/>
@@ -112,47 +95,78 @@ export default function DashboardPage() {
 
       <Row gutter={[16, 16]} style={{ marginTop: 24 }}>
         <Col xs={24} lg={14}>
-          <Card title="Revenue Overview" bordered={false}>
-            <ResponsiveContainer width="100%" height={300}>
-              <AreaChart data={areaChartData}>
-                <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="name" />
-                <YAxis />
-                <Tooltip />
-                <Area
-                  type="monotone"
-                  dataKey="revenue"
-                  stroke="#10b981"
-                  strokeWidth={2}
-                  fillOpacity={0.3}
-                  fill="#10b981"
-                />
-              </AreaChart>
-            </ResponsiveContainer>
+          <Card title="Campaign Performance" bordered={false}>
+            {campaigns.length === 0 ? (
+              <div style={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "#999" }}>
+                No data available
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <AreaChart data={mockAreaChartData}>
+                  <CartesianGrid strokeDasharray="3 3" />
+                  <XAxis dataKey="date" />
+                  <YAxis />
+                  <Tooltip />
+
+                  <Area
+                    type="monotone"
+                    dataKey="clicks"
+                    stroke="#3b82f6"
+                    fill="#3b82f6"
+                    fillOpacity={0.3}
+                    strokeWidth={2}
+                  />
+
+                  <Area
+                    type="monotone"
+                    dataKey="reach"
+                    stroke="#8b5cf6"
+                    fill="#8b5cf6"
+                    fillOpacity={0.3}
+                    strokeWidth={2}
+                  />
+
+                  <Area
+                    type="monotone"
+                    dataKey="budgetUtilization"
+                    stroke="red"
+                    fill="#10b981"
+                    fillOpacity={0.3}
+                    strokeWidth={2}
+                  />
+                </AreaChart>
+              </ResponsiveContainer>
+            )}
           </Card>
         </Col>
 
         <Col xs={24} lg={10}>
-          <Card title="Campaign Status" bordered={false}>
-            <ResponsiveContainer width="100%" height={300}>
-              <PieChart>
-                <Pie
-                  data={pieData}
-                  dataKey="value"
-                  nameKey="name"
-                  outerRadius={100}
-                  label
-                >
-                  {pieData.map((_entry, index) => (
-                    <Cell
-                      key={`cell-${index}`}
-                      fill={COLORS[index % COLORS.length]}
-                    />
-                  ))}
-                </Pie>
-                <Tooltip />
-              </PieChart>
-            </ResponsiveContainer>
+          <Card title="Campaign Status">
+            {pieData.length === 0 ? (
+              <div style={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "#999" }}>
+                No data available
+              </div>
+            ) : (
+              <ResponsiveContainer width="100%" height={300}>
+                <PieChart>
+                  <Pie
+                    data={pieData}
+                    dataKey="value"
+                    nameKey="name"
+                    outerRadius={100}
+                    label
+                  >
+                    {pieData.map((entry, index) => (
+  <Cell
+    key={`cell-${index}`}
+    fill={STATUS_COLORS[entry.name]}
+  />
+))}
+                  </Pie>
+                  <Tooltip />
+                </PieChart>
+              </ResponsiveContainer>
+            )}
           </Card>
         </Col>
       </Row>
