@@ -36,13 +36,8 @@ export default function CampaignPage() {
 
   const [form] = Form.useForm();
 
-  // useEffect(() => {
-  //   fetchCampaigns();
-  // }, [fetchCampaigns]);
-
   useCampaignStore((state) => state.refreshMetrics);
  
-
   useCampaignPolling();
 
   const filteredData = campaigns.filter((campaign) => {
@@ -64,7 +59,9 @@ export default function CampaignPage() {
       } else {
         const newCampaign: Campaign = {
           impressions: 0,
-          clicks: 0,  
+          clicks: 0,
+          budget: 0,
+          spend: 0,
           id: Date.now().toString(),
           ...values,
         };
@@ -117,6 +114,13 @@ export default function CampaignPage() {
     {
       title: "Clicks",
       dataIndex: "clicks",
+    },
+    {
+      title: "Budget Utilization (%)",
+      render: (_, record) => {
+        const utilization = record.budget > 0 ? ((record.spend / record.budget) * 100).toFixed(0) : "0";
+        return `${utilization}%`;
+      },
     },
     {
       title: "Actions",
@@ -187,7 +191,6 @@ export default function CampaignPage() {
         />
       </Card>
 
-      {/* Modal */}
       <Modal
         title={editingCampaign ? "Edit Campaign" : "Add Campaign"}
         open={isModalOpen}
@@ -227,15 +230,7 @@ export default function CampaignPage() {
           >
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
-
-          <Form.Item
-            name="spend"
-            label="Spend"
-            rules={[{ required: true }]}
-          >
-            <InputNumber style={{ width: "100%" }} />
-          </Form.Item>
-        </Form>
+          </Form>
       </Modal>
     </div>
   );

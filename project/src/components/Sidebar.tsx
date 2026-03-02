@@ -10,7 +10,7 @@ export default function Sidebar() {
   return (
     <Sider breakpoint="lg" collapsedWidth="0">
       <div style={{ color: "white", padding: 16, fontSize: 18 }}>
-        Enterprise Admin
+        AMGO CampaignHub
       </div>
 
       <Menu
@@ -27,11 +27,6 @@ export default function Sidebar() {
             key: "/campaigns",
             icon: <FundProjectionScreenOutlined />,
             label: "Campaigns",
-          },
-          {
-            key: "/system-status",
-            icon: <DashboardOutlined />,
-            label: "System Status",
           },
           {
             key: "/settings",

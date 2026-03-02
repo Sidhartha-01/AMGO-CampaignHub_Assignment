@@ -3,8 +3,7 @@ import { Routes, Route, Navigate } from "react-router-dom";
 import MainLayout from "../layouts/MainLayout";
 
 const DashboardPage = lazy(() => import("../pages/DashboardPage"));
-const CampaignPage = lazy(() => import("../pages/campaignPages"));
-const SystemStatusPage = lazy(() => import("../components/SystemStatus"));
+const CampaignPage = lazy(() => import("../pages/CampaignPage"));
 const SettingsPage = lazy(() => import("../pages/SettingsPage"));
 
 export default function AppRouters() {
@@ -15,7 +14,6 @@ export default function AppRouters() {
             <Route path="/" element={<Navigate to="/dashboard"/>} />
             <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/campaigns" element={<CampaignPage />} />
-            <Route path="/system-status" element={<SystemStatusPage />} />
             <Route path="/settings" element={<SettingsPage />} />
           </Route>
       </Routes>
