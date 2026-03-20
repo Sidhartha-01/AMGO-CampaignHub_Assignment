@@ -3,7 +3,6 @@ import { Zap } from "lucide-react";
 import { useCampaignStore } from "../store/campaignStore";
 import { useState } from "react";
 
-
 export default function RecentCampaigns() {
   const { campaigns } = useCampaignStore();
   const [viewAll, setViewAll] = useState(false);
@@ -15,10 +14,11 @@ export default function RecentCampaigns() {
   return (
     <div className="bg-white rounded-2xl border border-zinc-200 shadow-sm overflow-hidden">
       <div className="p-6 border-b border-zinc-100 flex items-center justify-between">
-        <h3 className="font-semibold text-zinc-900">
-          Recent Campaigns
-        </h3>
-        <button className="text-xs font-bold text-emerald-600 hover:underline uppercase tracking-wider" onClick={func}>
+        <h3 className="font-semibold text-zinc-900">Recent Campaigns</h3>
+        <button
+          className="text-xs font-bold text-emerald-600 hover:underline uppercase tracking-wider"
+          onClick={func}
+        >
           View All
         </button>
       </div>
@@ -41,7 +41,7 @@ export default function RecentCampaigns() {
                 <div className="text-xs text-zinc-500">
                   Modified{" "}
                   {new Date(
-                    campaign.createdAt || Date.now()
+                    campaign.createdAt || Date.now(),
                   ).toLocaleDateString()}
                 </div>
               </div>
@@ -52,8 +52,8 @@ export default function RecentCampaigns() {
                 campaign.status === "Active"
                   ? "green"
                   : campaign.status === "Paused"
-                  ? "orange"
-                  : "red"
+                    ? "orange"
+                    : "red"
               }
               style={{
                 borderRadius: 20,

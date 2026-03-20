@@ -1,11 +1,6 @@
 import { Row, Col, Card } from "antd";
 import { useMemo } from "react";
-import {
-  TrendingUp,
-  Users,
-  Target,
-  Zap,
-} from "lucide-react";
+import { TrendingUp, Users, Target, Zap } from "lucide-react";
 import {
   AreaChart,
   Area,
@@ -25,18 +20,21 @@ import { useCampaignPolling } from "../hooks/useCampaignPolling";
 import { mockAreaChartData } from "../sdk-client/services/campaignService";
 
 const STATUS_COLORS: Record<string, string> = {
-  Active: "#22c55e",     // green
-  Paused: "#f59e0b",    // orange
-  Completed: "#ef4444",  // red
-};;
+  Active: "#22c55e", // green
+  Paused: "#f59e0b", // orange
+  Completed: "#ef4444", // red
+};
 
 export default function DashboardPage() {
   const { campaigns } = useCampaignStore();
 
   useCampaignPolling();
 
-  const activeCampaigns = campaigns.filter(c => c.status === "Active").length;
-  const totalReach = campaigns.reduce((acc, c) => acc + (c.impressions || 0), 0);
+  const activeCampaigns = campaigns.filter((c) => c.status === "Active").length;
+  const totalReach = campaigns.reduce(
+    (acc, c) => acc + (c.impressions || 0),
+    0,
+  );
   const totalClicks = campaigns.reduce((acc, c) => acc + (c.clicks || 0), 0);
   const totalSpend = campaigns.reduce((acc, c) => acc + (c.spend || 0), 0);
 
@@ -62,7 +60,10 @@ export default function DashboardPage() {
             value={activeCampaigns}
             icon={Zap}
             color="text-amber-600"
-            bg="bg-amber-50" change={""} trend={"up"}/>
+            bg="bg-amber-50"
+            change={""}
+            trend={"up"}
+          />
         </Col>
 
         <Col xs={24} sm={12} md={6}>
@@ -71,7 +72,10 @@ export default function DashboardPage() {
             value={totalClicks.toLocaleString()}
             icon={Users}
             color="text-blue-600"
-            bg="bg-blue-50" change={""} trend={"up"}/>
+            bg="bg-blue-50"
+            change={""}
+            trend={"up"}
+          />
         </Col>
 
         <Col xs={24} sm={12} md={6}>
@@ -80,7 +84,10 @@ export default function DashboardPage() {
             value={totalReach.toLocaleString()}
             icon={Target}
             color="text-purple-600"
-            bg="bg-purple-50" change={""} trend={"up"}/>
+            bg="bg-purple-50"
+            change={""}
+            trend={"up"}
+          />
         </Col>
 
         <Col xs={24} sm={12} md={6}>
@@ -89,7 +96,10 @@ export default function DashboardPage() {
             value={`${totalSpend.toLocaleString()}%`}
             icon={TrendingUp}
             color="text-emerald-600"
-            bg="bg-emerald-50" change={""} trend={"up"}/>
+            bg="bg-emerald-50"
+            change={""}
+            trend={"up"}
+          />
         </Col>
       </Row>
 
@@ -97,7 +107,15 @@ export default function DashboardPage() {
         <Col xs={24} lg={14}>
           <Card title="Campaign Performance" bordered={false}>
             {campaigns.length === 0 ? (
-              <div style={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "#999" }}>
+              <div
+                style={{
+                  height: 300,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#999",
+                }}
+              >
                 No data available
               </div>
             ) : (
@@ -143,7 +161,15 @@ export default function DashboardPage() {
         <Col xs={24} lg={10}>
           <Card title="Campaign Status">
             {pieData.length === 0 ? (
-              <div style={{ height: 300, display: "flex", alignItems: "center", justifyContent: "center", color: "#999" }}>
+              <div
+                style={{
+                  height: 300,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "#999",
+                }}
+              >
                 No data available
               </div>
             ) : (
@@ -157,11 +183,11 @@ export default function DashboardPage() {
                     label
                   >
                     {pieData.map((entry, index) => (
-  <Cell
-    key={`cell-${index}`}
-    fill={STATUS_COLORS[entry.name]}
-  />
-))}
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={STATUS_COLORS[entry.name]}
+                      />
+                    ))}
                   </Pie>
                   <Tooltip />
                 </PieChart>
@@ -174,7 +200,6 @@ export default function DashboardPage() {
       <div className="mt-6">
         <RecentCampaigns />
       </div>
-
     </div>
   );
 }

@@ -32,10 +32,10 @@ export default function HeaderBar() {
         paddingLeft: 24,
       }}
     >
-    <h2 className="ml-5 text-xl font-semibold text-gray-900 tracking-tight">
-    {pageTitle}
-    </h2>
-      
+      <h2 className="ml-5 text-xl font-semibold text-gray-900 tracking-tight">
+        {pageTitle}
+      </h2>
+
       <Dropdown
         menu={{
           items: [
