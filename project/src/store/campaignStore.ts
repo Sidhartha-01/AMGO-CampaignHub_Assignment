@@ -16,20 +16,6 @@ export const useCampaignStore = create<CampaignState>((set) => ({
   campaigns: [],
   loading: false,
 
-  // fetchCampaigns: async () => {
-  //   set({ loading: true });
-  //   // const data = await campaignService.getCampaigns(campa);
-
-  //   set((state) =>
-  //     state.campaigns.length == 0
-  //       ? { campaigns: data, loading: false }
-  //       : {
-  //           campaigns: [...state.campaigns],
-  //           loading: false,
-  //         }
-  //   );
-  // },
-
   refreshMetrics: async (data : Campaign[]) => {
     const updated = await campaignService.simulateMetricUpdate(data);
     set((state) => {

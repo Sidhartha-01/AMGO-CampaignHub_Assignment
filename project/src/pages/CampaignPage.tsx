@@ -20,14 +20,15 @@ import { useCampaignPolling } from "../hooks/useCampaignPolling";
 
 const { Search } = Input;
 
+const CampaignStatus = {
+  Active: "Active",
+  Paused: "Paused",
+  Completed: "Completed",
+};
+
 export default function CampaignPage() {
-  const {
-    campaigns,
-    loading,
-    addCampaign,
-    updateCampaign,
-    deleteCampaign,
-  } = useCampaignStore();
+  const { campaigns, loading, addCampaign, updateCampaign, deleteCampaign } =
+    useCampaignStore();
 
   const [searchText, setSearchText] = useState("");
   const [statusFilter, setStatusFilter] = useState<string | undefined>();
@@ -37,7 +38,7 @@ export default function CampaignPage() {
   const [form] = Form.useForm();
 
   useCampaignStore((state) => state.refreshMetrics);
- 
+
   useCampaignPolling();
 
   const filteredData = campaigns.filter((campaign) => {
@@ -93,8 +94,8 @@ export default function CampaignPage() {
           status === "Active"
             ? "green"
             : status === "Paused"
-            ? "orange"
-            : "red";
+              ? "orange"
+              : "red";
 
         return <Tag color={color}>{status}</Tag>;
       },
@@ -118,7 +119,10 @@ export default function CampaignPage() {
     {
       title: "Budget Utilization (%)",
       render: (_, record) => {
-        const utilization = record.budget > 0 ? ((record.spend / record.budget) * 100).toFixed(0) : "0";
+        const utilization =
+          record.budget > 0
+            ? ((record.spend / record.budget) * 100).toFixed(0)
+            : "0";
         return `${utilization}%`;
       },
     },
@@ -185,7 +189,7 @@ export default function CampaignPage() {
           columns={columns}
           dataSource={filteredData}
           loading={loading}
-          rowKey="id" 
+          rowKey="id"
           pagination={{ pageSize: 5 }}
           scroll={{ x: "max-content" }}
         />
@@ -209,28 +213,23 @@ export default function CampaignPage() {
             <Input />
           </Form.Item>
 
-          <Form.Item
-            name="status"
-            label="Status"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="status" label="Status" rules={[{ required: true }]}>
             <Select
               options={[
-                { label: "Active", value: "Active" },
-                { label: "Paused", value: "Paused" },
-                { label: "Completed", value: "Completed" },
+                { label: CampaignStatus.Active, value: CampaignStatus.Active },
+                { label: CampaignStatus.Paused, value: CampaignStatus.Paused },
+                {
+                  label: CampaignStatus.Completed,
+                  value: CampaignStatus.Completed,
+                },
               ]}
             />
           </Form.Item>
 
-          <Form.Item
-            name="budget"
-            label="Budget"
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="budget" label="Budget" rules={[{ required: true }]}>
             <InputNumber style={{ width: "100%" }} />
           </Form.Item>
-          </Form>
+        </Form>
       </Modal>
     </div>
   );

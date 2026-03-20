@@ -1,7 +1,4 @@
-import {
-  ArrowUpRight,
-  ArrowDownRight,
-} from "lucide-react";
+import { ArrowDownOutlined, ArrowUpOutlined } from "@ant-design/icons";
 
 interface Props {
   title: string;
@@ -31,23 +28,19 @@ export default function StatCard({
 
         <div
           className={`flex items-center text-xs font-bold ${
-            trend === "up"
-              ? "text-emerald-600"
-              : "text-red-600"
+            trend === "up" ? "text-emerald-600" : "text-red-600"
           }`}
         >
           {change}
           {trend === "up" ? (
-            <ArrowUpRight className="w-3 h-3 ml-0.5" />
+            <ArrowUpOutlined className="w-3 h-3 ml-0.5" />
           ) : (
-            <ArrowDownRight className="w-3 h-3 ml-0.5" />
+            <ArrowDownOutlined className="w-3 h-3 ml-0.5" />
           )}
         </div>
       </div>
 
-      <div className="text-3xl font-bold text-zinc-900 mb-1">
-        {value}
-      </div>
+      <div className="text-3xl font-bold text-zinc-900 mb-1">{value}</div>
 
       <div className="text-xs font-medium text-zinc-500 uppercase tracking-wider">
         {title}
